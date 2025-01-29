@@ -33,4 +33,9 @@ public class InventoryController {
     public ResponseEntity<InventoryDto> getInStock(@RequestParam String skuCode,@RequestParam Long quantity) {
         return ResponseEntity.ok(service.isInStock(skuCode, quantity));
     }
+
+    @PutMapping("/update/items")
+    public ResponseEntity<InventoryDto> updateInventoryItemsQuantity(@RequestParam String skuCode,@RequestParam Long quantity) {
+        return ResponseEntity.ok(service.subtractOrderedItems(skuCode, quantity));
+    }
 }

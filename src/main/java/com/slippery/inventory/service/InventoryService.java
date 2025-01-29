@@ -11,4 +11,5 @@ public interface InventoryService {
     InventoryDto findById(Long id);
     InventoryDto deleteById(Long id);
     InventoryDto isInStock(String skuCode,Long quantity);
+    InventoryDto subtractOrderedItems(String skuCode,Long quantity);
 }

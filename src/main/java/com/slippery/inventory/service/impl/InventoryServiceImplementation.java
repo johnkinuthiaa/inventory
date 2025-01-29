@@ -96,4 +96,28 @@ public class InventoryServiceImplementation implements InventoryService {
 
         return response;
     }
+
+    @Override
+    public InventoryDto subtractOrderedItems(String skuCode, Long quantity) {
+        InventoryDto response =new InventoryDto();
+        InventoryDto inStock =isInStock(skuCode,quantity);
+        Optional<List<Inventory>> existingInventory =Optional.of(repository.findAll().stream()
+                .filter(inventory -> inventory.getSkuCode().equalsIgnoreCase(skuCode))
+                .toList());
+        log.info("in stock :{}", inStock.isInStock());
+        if(!inStock.isInStock()){
+            response.setInStock(false);
+            response.setMessage("Item is not in stock!");
+            response.setStatusCode(204);
+            return response;
+        }
+        long balance =existingInventory.get().get(0).getQuantity()-quantity;
+        existingInventory.get().get(0).setQuantity(balance);
+        repository.save(existingInventory.get().get(0));
+        response.setMessage("Removed "+quantity+" items from "+skuCode+"'s from inventory" +
+                " Quantity remaining : "+balance);
+        response.setStatusCode(200);
+        response.setInStock(balance > 0);
+        return response;
+    }
 }
